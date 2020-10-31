@@ -1,7 +1,11 @@
+from pprint import pprint
+
 import telebot
+import dropbox
+import re
 
 from pathlib import Path
-import dropbox
+
 
 DB_TOKEN = "RfH15ItBqVcAAAAAAAAAAYaswJ3ZlkUbgdAQhW48JTssGkQ_Vs4mI6xtDtWPoQjN"
 TG_TOKEN = "1161497067:AAFI0BAYtaA2Z4Q97OCgQeKtGlxJv9gc7AI"
@@ -10,15 +14,16 @@ BASEDIR = Path(__file__).resolve(strict=True).parent
 bot = telebot.TeleBot(TG_TOKEN)
 dbx = dropbox.Dropbox(DB_TOKEN)
 
-def load_file(query, folder='графики смен'):
-    path_to_file = Path(BASEDIR, query.data[-4:] + query.data[:-4])
+def load_file(query, folder='/tg_bot/графики смен'):
+    path_to_file = Path(BASEDIR, query.data)
+    # path_to_file = Path(BASEDIR, query.data[-4:] + query.data[:-4])
     with open(path_to_file, 'wb') as f:
-        db_path = '/' + folder + '/' + query.message.text + '/' + query.data[:-5]
+        db_path = folder + '/' + query.message.text + '/' + query.data[:-5]
         metadata, file = dbx.files_download(db_path)
         f.write(file.content)
 
 
-def get_folders(folder='/графики смен', name=''):
+def get_folders(folder='/tg_bot/графики смен', name=''):
     enteries = sorted(dbx.files_list_folder(path=str(folder + '/' + name))._entries_value, key=lambda i: i.name)
     return enteries
 
@@ -39,15 +44,17 @@ def commands(message):
     )
 
 
-@bot.callback_query_handler(func=lambda mess: mess.data.startswith('графики'))
+@bot.callback_query_handler(func=lambda call: bool(re.search('^графики\s\d+', call.data)))
 def get_grafiks(query):
     bot.answer_callback_query(query.id)
+    print(query.message)
     send_grafiks_result(query.message, query.data)
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def get_file(query):
     bot.answer_callback_query(query.id)
+    print(22)
     load_file(query)
     send_file_result(query)
 
