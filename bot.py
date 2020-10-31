@@ -1,38 +1,26 @@
-from pprint import pprint
+import os
 
 import telebot
 import dropbox
+import dotenv
 import re
 
 from pathlib import Path
+import grafiki
+import main
+
+BASE_DIR = Path(__file__).resolve(strict=True).parent
 
 
-DB_TOKEN = "RfH15ItBqVcAAAAAAAAAAYaswJ3ZlkUbgdAQhW48JTssGkQ_Vs4mI6xtDtWPoQjN"
-TG_TOKEN = "1161497067:AAFI0BAYtaA2Z4Q97OCgQeKtGlxJv9gc7AI"
-BASEDIR = Path(__file__).resolve(strict=True).parent
-
-bot = telebot.TeleBot(TG_TOKEN)
-dbx = dropbox.Dropbox(DB_TOKEN)
-
-def load_file(query, folder='/tg_bot/графики смен'):
-    # path_to_file = Path(BASEDIR, query.data)
-    path_to_file = Path(BASEDIR, query.data[-4:] + query.data[:-4])
-    with open(path_to_file, 'wb') as f:
-        db_path = folder + '/' + query.message.text + '/' + query.data[:-5]
-        metadata, file = dbx.files_download(db_path)
-        f.write(file.content)
-
-
-def get_folders(folder='/tg_bot/графики смен', name=''):
-    enteries = sorted(dbx.files_list_folder(path=str(folder + '/' + name))._entries_value, key=lambda i: i.name)
-    return enteries
+bot = main.bot
+dbx = main.dbx
 
 
 @bot.message_handler(commands=['start'])
 def commands(message):
     bot.send_chat_action(message.chat.id, 'typing')
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
-    folders = get_folders()
+    folders = main.get_folders()
     for folder in folders[-3:]:
         keyboard.row(
             telebot.types.InlineKeyboardButton(folder.name, callback_data=folder.name)
@@ -45,44 +33,8 @@ def commands(message):
 
 
 @bot.callback_query_handler(func=lambda call: bool(re.search('графики\s\d+', call.data)))
-def send_grafiks_result(query):
-    print('df')
-    bot.answer_callback_query(query.id)
-    bot.send_chat_action(query.message.chat.id, 'typing')
-    keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
-    folders = get_folders(name=query.data)
-    for folder in folders:
-        keyboard.row(
-            telebot.types.InlineKeyboardButton(str(folder.name + ' ' + query.data),
-                                               callback_data=str(folder.name) + ' ' + str(query.data[-4:])
-                                               )
-        )
-        # print(str(folder.name) + ' ' + str(query.data[-4:]))
-    bot.send_message(
-        query.message.chat.id,
-        str(query.data),
-        reply_markup=keyboard
-    )
-
-
-@bot.callback_query_handler(func=lambda call: bool(re.search('\S+(xls|xlsx)\s+\d{3,}', call.data)))
-def get_file(query):
-    bot.answer_callback_query(query.id)
-    print(query)
-    load_file(query)
-    send_file_result(query)
-
-
-def send_file_result(query):
-    bot.send_chat_action(query.message.chat.id, 'typing')
-    path_to_file = Path(BASEDIR, query.data[-4:] + query.data[:-4])
-    f = open(path_to_file, 'rb')
-    bot.send_document(
-        query.message.chat.id, f,
-    )
-    # os.remove(path_to_file)
-
-
+def get_grafiks(query):
+    grafiki.get_grafiks_result(query)
 
 
 bot.polling()
