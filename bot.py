@@ -15,8 +15,8 @@ bot = telebot.TeleBot(TG_TOKEN)
 dbx = dropbox.Dropbox(DB_TOKEN)
 
 def load_file(query, folder='/tg_bot/графики смен'):
-    path_to_file = Path(BASEDIR, query.data)
-    # path_to_file = Path(BASEDIR, query.data[-4:] + query.data[:-4])
+    # path_to_file = Path(BASEDIR, query.data)
+    path_to_file = Path(BASEDIR, query.data[-4:] + query.data[:-4])
     with open(path_to_file, 'wb') as f:
         db_path = folder + '/' + query.message.text + '/' + query.data[:-5]
         metadata, file = dbx.files_download(db_path)
@@ -44,17 +44,31 @@ def commands(message):
     )
 
 
-@bot.callback_query_handler(func=lambda call: bool(re.search('^графики\s\d+', call.data)))
-def get_grafiks(query):
+@bot.callback_query_handler(func=lambda call: bool(re.search('графики\s\d+', call.data)))
+def send_grafiks_result(query):
+    print('df')
     bot.answer_callback_query(query.id)
-    print(query.message)
-    send_grafiks_result(query.message, query.data)
+    bot.send_chat_action(query.message.chat.id, 'typing')
+    keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
+    folders = get_folders(name=query.data)
+    for folder in folders:
+        keyboard.row(
+            telebot.types.InlineKeyboardButton(str(folder.name + ' ' + query.data),
+                                               callback_data=str(folder.name) + ' ' + str(query.data[-4:])
+                                               )
+        )
+        # print(str(folder.name) + ' ' + str(query.data[-4:]))
+    bot.send_message(
+        query.message.chat.id,
+        str(query.data),
+        reply_markup=keyboard
+    )
 
 
-@bot.callback_query_handler(func=lambda call: True)
+@bot.callback_query_handler(func=lambda call: bool(re.search('\S+(xls|xlsx)\s+\d{3,}', call.data)))
 def get_file(query):
     bot.answer_callback_query(query.id)
-    print(22)
+    print(query)
     load_file(query)
     send_file_result(query)
 
@@ -69,21 +83,6 @@ def send_file_result(query):
     # os.remove(path_to_file)
 
 
-def send_grafiks_result(message, data):
-    bot.send_chat_action(message.chat.id, 'typing')
-    keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
-    folders = get_folders(name=data)
-    for folder in folders:
-        keyboard.row(
-            telebot.types.InlineKeyboardButton(str(folder.name + ' ' + data),
-                                               callback_data=str(folder.name) + ' ' + str(data[-4:])
-                                               )
-        )
-    bot.send_message(
-        message.chat.id,
-        str(data),
-        reply_markup=keyboard
-    )
 
 
 bot.polling()
