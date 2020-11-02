@@ -23,7 +23,7 @@ def get_otpuska_folder(query):
             )
     bot.send_message(
         query.message.chat.id,
-        'Выберите график:',
+        'Выберите график отпусков:',
         reply_markup=keyboard
     )
 

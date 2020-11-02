@@ -1,12 +1,10 @@
 import os
 
 import telebot
-import dropbox
-import dotenv
 import re
 
 from pathlib import Path
-import grafiki, otpuska, main
+import grafiki, tables, otpuska, main
 
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent
@@ -21,7 +19,7 @@ def commands(message):
     bot.send_chat_action(message.chat.id, 'typing')
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
     folders = main.get_folders()
-    for folder in folders[-3:]:
+    for folder in folders:
         keyboard.row(
             telebot.types.InlineKeyboardButton(folder.name, callback_data=folder.name)
         )
@@ -53,5 +51,17 @@ def get_otpuska_folder(query):
 @bot.callback_query_handler(func=lambda call: bool(re.search('График отпусков\s\d+', call.data)))
 def get_otpusk_file(query):
     otpuska.get_otpusk_file(query)
+
+@bot.callback_query_handler(func=lambda call: bool(re.search('ТАБЕЛЯ', call.data)))
+def get_tables_folder(query):
+    tables.get_tables_folder(query)
+
+@bot.callback_query_handler(func=lambda call: bool(re.search('Табеля\s\d+', call.data)))
+def get_tables_result(query):
+    tables.get_tables_result(query)
+
+@bot.callback_query_handler(func=lambda call: bool(re.search('табель\s\w+', call.data)))
+def get_table_file(query):
+    tables.get_table_file(query)
 
 bot.polling()
