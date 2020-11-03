@@ -1,20 +1,19 @@
 
 import telebot
-import main
+import common
 
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent
 
-bot = main.bot
-dbx = main.dbx
+bot = common.bot
+dbx = common.dbx
 
 
 def get_grafiks_folder(query):
-    bot.answer_callback_query(query.id)
     bot.send_chat_action(query.message.chat.id, 'typing')
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
-    folders = main.get_folders(folder='/tg_bot/', name=query.data)
+    folders = common.get_folders(folder='/tg_bot/', name=query.data)
     for folder in folders[-4:]:
         keyboard.row(
             telebot.types.InlineKeyboardButton(str(folder.name),
@@ -29,10 +28,10 @@ def get_grafiks_folder(query):
 
 
 def get_grafiks_result(query):
-    bot.answer_callback_query(query.id)
     bot.send_chat_action(query.message.chat.id, 'typing')
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
-    folders = main.get_folders(folder='/tg_bot/графики смен', name=query.data)
+    folders = common.get_folders(folder='/tg_bot/графики смен', name=query.data)
+    folders.sort(key=lambda i: i.client_modified)
     for folder in folders:
         keyboard.row(
             telebot.types.InlineKeyboardButton(str(folder.name + ' ' + query.data),
@@ -47,7 +46,7 @@ def get_grafiks_result(query):
 
 
 def get_grafik_file(query):
-    bot.answer_callback_query(query.id)
+    bot.send_chat_action(query.message.chat.id, 'typing')
     load_grafik(query)
     send_grafik(query)
     path_to_file = Path(BASE_DIR, query.data[-4:] + query.data[:-4])

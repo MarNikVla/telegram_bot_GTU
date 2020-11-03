@@ -1,21 +1,19 @@
 import telebot
-import main
+import common
 
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent
 
-bot = main.bot
-dbx = main.dbx
+bot = common.bot
+dbx = common.dbx
 
 
 def get_tables_folder(query):
-    bot.answer_callback_query(query.id)
     bot.send_chat_action(query.message.chat.id, 'typing')
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
-    folders = main.get_folders(folder='/tg_bot/', name=query.data)
+    folders = common.get_folders(folder='/tg_bot/', name=query.data)
     folders = [folder for folder in folders if folder.name.startswith('Табеля')]
-
     for folder in folders[-4:]:
         keyboard.row(
             telebot.types.InlineKeyboardButton(str(folder.name),
@@ -30,11 +28,9 @@ def get_tables_folder(query):
 
 
 def get_tables_result(query):
-    bot.answer_callback_query(query.id)
-
     bot.send_chat_action(query.message.chat.id, 'typing')
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
-    folders = main.get_folders(folder='/tg_bot/ТАБЕЛЯ', name=query.data)
+    folders = common.get_folders(folder='/tg_bot/ТАБЕЛЯ', name=query.data)
     folders = [folder for folder in folders if
                folder.name.startswith('табель') and len(folder.name.replace('ГТЦ', '')) < 22]
     folders.sort(key=lambda i: i.client_modified)
@@ -52,7 +48,6 @@ def get_tables_result(query):
 
 
 def get_table_file(query):
-    bot.answer_callback_query(query.id)
     load_table_file(query)
     send_table_file(query)
     path_to_file = Path(BASE_DIR, query.data)
