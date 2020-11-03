@@ -13,7 +13,7 @@ bot = common.bot
 dbx = common.dbx
 
 
-# @bot.message_handler(commands=['start'])
+@bot.message_handler(commands=['start'])
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def commands(message):
     bot.send_chat_action(message.chat.id, 'typing')
