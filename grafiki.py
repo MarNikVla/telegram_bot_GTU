@@ -34,7 +34,6 @@ def get_grafiks_result(query):
     folders = [folder for folder in folders if hasattr(folder, 'client_modified')]
     folders.sort(key=lambda i: i.client_modified)
     for folder in folders:
-        print(folder)
         keyboard.row(
             telebot.types.InlineKeyboardButton(str(folder.name + ' ' + query.data),
                                                callback_data=str(folder.name) + ' ' + str(query.data[-4:])
