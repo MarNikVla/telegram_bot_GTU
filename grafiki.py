@@ -31,8 +31,10 @@ def get_grafiks_result(query):
     bot.send_chat_action(query.message.chat.id, 'typing')
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
     folders = common.get_folders(folder='/tg_bot/графики смен', name=query.data)
+    folders = [folder for folder in folders if hasattr(folder, 'client_modified')]
     folders.sort(key=lambda i: i.client_modified)
     for folder in folders:
+        print(folder)
         keyboard.row(
             telebot.types.InlineKeyboardButton(str(folder.name + ' ' + query.data),
                                                callback_data=str(folder.name) + ' ' + str(query.data[-4:])

@@ -32,7 +32,7 @@ def get_tables_result(query):
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
     folders = common.get_folders(folder='/tg_bot/ТАБЕЛЯ', name=query.data)
     folders = [folder for folder in folders if
-               folder.name.startswith('табель') and len(folder.name.replace('ГТЦ', '')) < 22]
+               folder.name.startswith('табель') and len(folder.name.replace('ГТЦ', '')) < 22 and hasattr(folder, 'client_modified')]
     folders.sort(key=lambda i: i.client_modified)
     for folder in folders:
         keyboard.row(
