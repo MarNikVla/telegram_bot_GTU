@@ -14,7 +14,7 @@ def get_grafiks_folder(query):
     bot.send_chat_action(query.message.chat.id, 'typing')
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
     folders = common.get_folders(folder='/tg_bot/', name=query.data)
-    for folder in folders[-4:]:
+    for folder in folders[-3:]:
         keyboard.row(
             telebot.types.InlineKeyboardButton(str(folder.name),
                                                callback_data=str(folder.name)

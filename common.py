@@ -22,7 +22,7 @@ bot = telebot.TeleBot(TG_TOKEN)
 dbx = dropbox.Dropbox(DB_TOKEN)
 
 def get_folders(folder='/tg_bot/', name=''):
-    enteries = sorted(dbx.files_list_folder(path=str(folder + '/' + name))._entries_value, key=lambda i: i.name)
+    enteries = sorted(dbx.files_list_folder(path=str(folder + '/' + name))._entries_value, key=lambda i: i.name.lower())
     return enteries
 
 

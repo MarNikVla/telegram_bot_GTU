@@ -60,7 +60,7 @@ def get_tables_folder(query):
     tables.get_tables_folder(query)
 
 
-@bot.callback_query_handler(func=lambda call: bool(re.search('Табеля\s\d+', call.data)))
+@bot.callback_query_handler(func=lambda call: bool(re.search('(Т|т)абеля\s\d+', call.data)))
 def get_tables_result(query):
     tables.get_tables_result(query)
 

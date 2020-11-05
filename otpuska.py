@@ -14,7 +14,7 @@ def get_otpuska_folder(query):
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
     folders = common.get_folders(folder='/tg_bot/', name=query.data)
     folders = [folder for folder in folders if folder.name.startswith('График отпусков')]
-    for folder in folders[-4:]:
+    for folder in folders[-3:]:
         keyboard.row(
             telebot.types.InlineKeyboardButton(str(folder.name),
                                                callback_data=str(folder.name)
