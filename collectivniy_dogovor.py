@@ -1,4 +1,3 @@
-import telebot
 import common
 
 from pathlib import Path

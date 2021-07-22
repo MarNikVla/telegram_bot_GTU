@@ -5,7 +5,7 @@ import telebot
 import re
 
 from pathlib import Path
-import grafiki, tables, otpuska, coll_dogovor, common
+import grafiki, tables, otpuska, collectivniy_dogovor, common
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent
 
@@ -72,7 +72,7 @@ def get_table_file(query):
 
 @bot.callback_query_handler(func=lambda call: bool(re.search('Коллективный\s\w+', call.data)))
 def get_dogovor_file(query):
-    coll_dogovor.send_dogovor_file(query)
+    collectivniy_dogovor.send_dogovor_file(query)
 
 
 while True:
@@ -80,6 +80,5 @@ while True:
         bot.polling(none_stop=True)
 
     except Exception as e:
-        print(e)  # или просто print(e) если у вас логгера нет,
-        # или import traceback; traceback.print_exc() для печати полной инфы
+        print(e)
         time.sleep(15)
