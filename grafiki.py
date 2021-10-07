@@ -35,7 +35,7 @@ def get_grafiks_result(query):
     folders.sort(key=lambda i: i.client_modified)
     for folder in folders:
         keyboard.row(
-            telebot.types.InlineKeyboardButton(str(folder.name + ' ' + query.data),
+            telebot.types.InlineKeyboardButton(str(folder.name + ' ' + query.data)[15:],
                                                callback_data=str(folder.name) + ' ' + str(query.data[-4:])
                                                )
         )
@@ -67,5 +67,5 @@ def send_grafik(query):
     path_to_file = Path(BASE_DIR, query.data[-4:] + query.data[:-4])
     f = open(path_to_file, 'rb')
     bot.send_document(
-        query.message.chat.id, f,
+        query.message.chat.id, f, caption=query.data[15:]
     )
