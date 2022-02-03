@@ -17,7 +17,7 @@ def get_grafiks_folder(query):
     for folder in folders[-3:]:
         keyboard.row(
             telebot.types.InlineKeyboardButton(str(folder.name),
-                                               callback_data=str(folder.name)
+                                               callback_data=str(folder.name[:36])
                                                )
         )
     bot.send_message(
@@ -36,7 +36,7 @@ def get_grafiks_result(query):
     for folder in folders:
         keyboard.row(
             telebot.types.InlineKeyboardButton(str(folder.name + ' ' + query.data)[15:],
-                                               callback_data=str(folder.name) + ' ' + str(query.data[-4:])
+                                               callback_data=str(folder.name)[:31] + ' ' + str(query.data[-4:])
                                                )
         )
     bot.send_message(
