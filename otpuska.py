@@ -14,14 +14,15 @@ def get_otpuska_folder(query):
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
     folders = common.get_folders(folder='/tg_bot/', name=query.data)
     folders = [folder for folder in folders if folder.name.startswith('График отпусков')]
-    print(folders[-1].name)
-    for folder in folders[-3:]:
-        keyboard.row(
-            telebot.types.InlineKeyboardButton(str(folder.name),
-                                               callback_data=str(folder.name[:37])
-                                               )
-        )
-        print(folder)
+
+    for folder in folders[-4:]:
+        if folder.name.endswith('.doc') or folder.name.endswith('.docx'):
+            keyboard.row(
+                telebot.types.InlineKeyboardButton(str(folder.name),
+                                                   callback_data=str(folder.name[:37])
+                                                   )
+            )
+
     bot.send_message(
         query.message.chat.id,
         'Выберите график отпусков:',
