@@ -18,7 +18,7 @@ def get_otpuska_folder(query):
     for index, folder in enumerate(files[-4:]):
         keyboard.row(
             telebot.types.InlineKeyboardButton(str(folder.name),
-                                               callback_data='График отпусков' + str(index)
+                                               callback_data='График отпусков' + ' ' + str(index)
                                                ))
 
     bot.send_message(
@@ -29,7 +29,7 @@ def get_otpuska_folder(query):
 
 
 def get_otpusk_file(query):
-    file_index = int(query.data[-1])
+    file_index = int(query.data.split()[-1])
     file = query.message.reply_markup.keyboard[file_index][0].text
     path_to_file = Path(BASE_DIR, file)
 
