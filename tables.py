@@ -13,12 +13,12 @@ def get_tables_folder(query):
     bot.send_chat_action(query.message.chat.id, 'typing')
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
     folders = common.get_folders(folder='/tg_bot/', name=query.data)
-    folders = [folder for folder in folders if (folder.name.startswith('Табеля') or folder.name.startswith('табеля'))]
+    files = [file for file in folders if (file.name.startswith('Табеля') or file.name.startswith('табеля'))]
 
-    for folder in folders[-3:]:
+    for file in files[-3:]:
         keyboard.row(
-            telebot.types.InlineKeyboardButton(str(folder.name),
-                                               callback_data=str(folder.name)
+            telebot.types.InlineKeyboardButton(str(file.name),
+                                               callback_data=str(file.name)
                                                )
         )
     bot.send_message(
@@ -32,13 +32,13 @@ def get_tables_result(query):
     bot.send_chat_action(query.message.chat.id, 'typing')
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
     folders = common.get_folders(folder='/tg_bot/ТАБЕЛЯ', name=query.data)
-    folders = [folder for folder in folders if
-               folder.name.startswith('табель') and len(folder.name.replace('ГТЦ', '')) < 22 and hasattr(folder, 'client_modified')]
-    folders.sort(key=lambda i: i.client_modified)
-    for folder in folders:
+    files = [file for file in folders if
+               file.name.startswith('табель') and len(file.name.replace('ГТЦ', '')) < 22 and hasattr(file, 'client_modified')]
+    files.sort(key=lambda i: i.client_modified)
+    for file in files:
         keyboard.row(
-            telebot.types.InlineKeyboardButton(str(folder.name + ' ' + query.data),
-                                               callback_data=str(folder.name[:26])
+            telebot.types.InlineKeyboardButton(str(file.name + ' ' + query.data),
+                                               callback_data=str(file.name[:26])
                                                )
         )
     bot.send_message(
