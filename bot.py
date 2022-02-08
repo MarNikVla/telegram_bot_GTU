@@ -50,7 +50,7 @@ def get_otpuska_folder(query):
     otpuska.get_otpuska_folder(query)
 
 
-@bot.callback_query_handler(func=lambda call: bool(re.search('График отпусков\s\d+', call.data)))
+@bot.callback_query_handler(func=lambda call: bool(re.search('График отпусков\d', call.data)))
 def get_otpusk_file(query):
     otpuska.get_otpusk_file(query)
 

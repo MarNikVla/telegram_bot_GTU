@@ -13,15 +13,13 @@ def get_otpuska_folder(query):
     bot.send_chat_action(query.message.chat.id, 'typing')
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
     folders = common.get_folders(folder='/tg_bot/', name=query.data)
-    folders = [folder for folder in folders if folder.name.startswith('График отпусков')]
+    files = [files for files in folders if files.name.startswith('График отпусков')]
 
-    for folder in folders[-4:]:
-        if folder.name.endswith('.doc') or folder.name.endswith('.docx'):
-            keyboard.row(
-                telebot.types.InlineKeyboardButton(str(folder.name),
-                                                   callback_data=str(folder.name[:37])
-                                                   )
-            )
+    for index, folder in enumerate(files[-4:]):
+        keyboard.row(
+            telebot.types.InlineKeyboardButton(str(folder.name),
+                                               callback_data='График отпусков' + str(index)
+                                               ))
 
     bot.send_message(
         query.message.chat.id,
@@ -31,23 +29,27 @@ def get_otpuska_folder(query):
 
 
 def get_otpusk_file(query):
-    load_otpusk_file(query)
-    send_otpusk_file(query)
-    path_to_file = Path(BASE_DIR, query.data)
+    file_index = int(query.data[-1])
+    file = query.message.reply_markup.keyboard[file_index][0].text
+    path_to_file = Path(BASE_DIR, file)
+
+    load_otpusk_file(file)
+    send_otpusk_file(query, file)
+
     path_to_file.unlink()
 
 
-def load_otpusk_file(query, folder='/tg_bot/Отпуска'):
-    path_to_file = Path(BASE_DIR, query.data)
+def load_otpusk_file(file, folder='/tg_bot/Отпуска'):
+    path_to_file = Path(BASE_DIR, file)
     with open(path_to_file, 'wb') as f:
-        db_path = folder + '/' + query.data
-        metadata, file = dbx.files_download(db_path)
-        f.write(file.content)
+        db_path = folder + '/' + file
+        metadata, db_file = dbx.files_download(db_path)
+        f.write(db_file.content)
 
 
-def send_otpusk_file(query):
+def send_otpusk_file(query, file):
     bot.send_chat_action(query.message.chat.id, 'typing')
-    path_to_file = Path(BASE_DIR, query.data)
+    path_to_file = Path(BASE_DIR, file)
     f = open(path_to_file, 'rb')
     bot.send_document(
         query.message.chat.id, f,
