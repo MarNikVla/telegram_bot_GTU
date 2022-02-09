@@ -8,7 +8,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent
 
-# Загружаем виртуальное окружение из .env если он существует смотри .env
+# Загружаем виртуальное окружение из .env если он существует смотри .env_example
 dotenv_file = Path(BASE_DIR, ".env")
 if Path.is_file(dotenv_file):
     dotenv.load_dotenv(dotenv_file)
