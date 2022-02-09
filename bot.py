@@ -30,17 +30,17 @@ def commands(message):
     )
 
 
-@bot.callback_query_handler(func=lambda call: bool(re.search('графики\s\D+', call.data)))
-def get_grafiks_folder(query):
-    grafiki.get_grafiks_folder(query)
+@bot.callback_query_handler(func=lambda call: bool(re.search('графики смен', call.data)))
+def get_grafiki_folder(query):
+    grafiki.get_grafiki_folder(query)
 
 
-@bot.callback_query_handler(func=lambda call: bool(re.search('графики\s\d+', call.data)))
-def get_grafiks(query):
+@bot.callback_query_handler(func=lambda call: bool(re.search('графики год\s\w', call.data)))
+def get_grafiki_year(query):
     grafiki.get_grafiks_result(query)
 
 
-@bot.callback_query_handler(func=lambda call: bool(re.search('\S+(xls|xlsx)\s+\d{3,}', call.data)))
+@bot.callback_query_handler(func=lambda call: bool(re.search('график\s\w', call.data)))
 def get_grafik_file(query):
     grafiki.get_grafik_file(query)
 
