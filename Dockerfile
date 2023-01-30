@@ -1,5 +1,6 @@
 #FROM python:3.9
-FROM python:3.9.16-slim
+FROM python:3.8
+#FROM python:3.9.16-slim
 
 
 ENV PYTHONDONTWRITEBYTECODE 1
