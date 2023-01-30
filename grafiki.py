@@ -32,7 +32,9 @@ def get_grafiks_result(query):
     bot.send_chat_action(query.message.chat.id, 'typing')
     keyboard = telebot.types.InlineKeyboardMarkup(row_width=4)
     folders = common.get_folders(folder='/tg_bot/графики смен', name=folder)
-    files = [file for file in folders if hasattr(file, 'client_modified')]
+    files = [file for file in folders if
+             (hasattr(file, 'client_modified') and file.name.endswith('xlsx'))]
+    print(files)
     files.sort(key=lambda i: i.client_modified)
     for i, file in enumerate(files):
         keyboard.row(
