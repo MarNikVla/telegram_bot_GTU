@@ -81,4 +81,7 @@ while True:
 
     except Exception as e:
         print(e)
-        time.sleep(4)
+        time.sleep(15)
+
+# bot.polling(none_stop=True)
+
