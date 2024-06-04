@@ -1,6 +1,6 @@
 #FROM python:3.9
 #FROM python:3.8
-FROM python:3.9.16-slim
+FROM python:3.9-slim
 
 
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -17,4 +17,4 @@ RUN pip install pipenv && pipenv install --dev --system --deploy
 COPY . /srv/www/web-report
 WORKDIR /srv/www/web-report
 
-CMD ["python", "bot.py"]
+#CMD ["python", "bot.py"]
